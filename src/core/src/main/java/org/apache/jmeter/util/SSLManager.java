@@ -59,6 +59,8 @@ import net.miginfocom.swing.MigLayout;
 public abstract class SSLManager {
     private static final Logger log = LoggerFactory.getLogger(SSLManager.class);
 
+    private static final String SSL_TRUST_STORE_TYPE = "javax.net.ssl.trustStoreType";// $NON-NLS-1$
+
     private static final String SSL_TRUST_STORE = "javax.net.ssl.trustStore";// $NON-NLS-1$
 
     private static final String KEY_STORE_PASSWORD = "javax.net.ssl.keyStorePassword"; // $NON-NLS-1$ NOSONAR no hard coded password
@@ -262,9 +264,12 @@ public abstract class SSLManager {
             }
             log.info("TrustStore Location: {}", fileName);
 
+            String trustStoreType = System.getProperty(SSL_TRUST_STORE_TYPE, "JKS");
+            log.info("TrustStore type: {}", trustStoreType);
+
             try {
-                this.trustStore = KeyStore.getInstance("JKS");
-                log.info("TrustStore created OK, Type: JKS");
+                this.trustStore = KeyStore.getInstance(trustStoreType);
+                log.info("TrustStore created OK, Type: " + trustStoreType);
             } catch (Exception e) {
                 this.trustStore = null;
                 throw new RuntimeException("Problem creating truststore: "+e.getMessage(), e);
